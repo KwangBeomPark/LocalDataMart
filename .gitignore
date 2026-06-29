@@ -22,3 +22,8 @@ Thumbs.db
 
 # Regenerated sample workspace, runtime outputs, and logs
 sample_workspace/
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec

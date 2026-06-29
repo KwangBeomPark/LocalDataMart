@@ -34,7 +34,7 @@ class PreReleaseChecker:
         ]
         
         # 금지 기술 키워드
-        self.forbidden_keywords = ["duckdb", "parquet", "pyside6", "pyinstaller", "fastapi", "flask"]
+        self.forbidden_keywords = ["duckdb", "parquet", "pyside6", "fastapi", "flask"]
         
         # 내부 절대경로 의심 키워드
         self.traceback_keywords = ["traceback", "file \"", "c:\\users", "c:/users", "/users/", "/home/"]
