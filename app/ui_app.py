@@ -7,7 +7,15 @@ from pathlib import Path
 import subprocess
 import threading
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+def resolve_project_root() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent.parent
+
+
+PROJECT_ROOT = resolve_project_root()
+os.chdir(PROJECT_ROOT)
 
 
 class DataMartUI:

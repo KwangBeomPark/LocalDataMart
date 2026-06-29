@@ -2,7 +2,7 @@
 
 이 도구는 여러 월별 Excel Raw Data 파일을 폴더 단위로 관리하고, 사용자가 정의한 Excel Config 기준에 따라 필요한 컬럼만 정제·통합한 뒤, Excel 등 리포트 도구에서 즉시 활용할 수 있는 Clean Table과 Report View(Summary)를 생성하는 로컬 데이터마트 빌더의 최소 기능 제품(MVP)입니다.
 
-현재 구현된 단계는 **Phase 0 ~ Phase 21 AppData 인스톨러 배포 테스트 준비**로, `Sales_Closing` 및 `AR_Detail` 가상 데이터를 기반으로 전체적인 데이터 흐름(Raw Excel → Config → Clean CSV → Summary CSV)이 작동하며, Config 무결성 검증, Reconciliation(대조 정합성 검증), tkinter 기반 Desktop UI, pre-release 자가 무결성 진단 스크립트, MIT 라이선스 파일, 다른 PC 설치 테스트 가이드, 그리고 AppData 설치용 부트스트랩 인스톨러가 정립되어 있습니다. GitHub 저장소에는 소스코드와 문서를 올리고, GitHub Release에는 선택적으로 `FinanceDataMart_Installer.exe`를 첨부합니다.
+현재 구현된 단계는 **Phase 0 ~ Phase 22 Python 미설치 PC용 독립 실행 배포판 및 설치파일 준비**로, `Sales_Closing` 및 `AR_Detail` 가상 데이터를 기반으로 전체적인 데이터 흐름(Raw Excel → Config → Clean CSV → Summary CSV)이 작동하며, Config 무결성 검증, Reconciliation(대조 정합성 검증), tkinter 기반 Desktop UI, pre-release 자가 무결성 진단 스크립트, MIT 라이선스 파일, 다른 PC 설치 테스트 가이드, 그리고 AppData 설치용 독립 실행 Setup 파일이 정립되어 있습니다. GitHub 저장소에는 소스코드와 문서를 올리고, GitHub Release에는 선택적으로 `FinanceDataMart_Setup.exe`를 첨부합니다.
 
 ## 📖 배포 문서 가이드
 보다 상세한 동작 이해와 제한 사항 확인을 위해 아래 문서를 참고하십시오:
@@ -24,7 +24,7 @@
 
 ## 🚫 중요 원칙 및 제약 사항 (절대 준수)
 - **공식 라이선스**: 본 프로젝트는 MIT License로 배포되며, 재배포 시 루트의 `LICENSE` 고지 전문을 유지해야 합니다.
-- **CLI 우선 및 최소 UI 제공**: 기본 실행은 CLI 스크립트 기반이며, 보조 수단으로 tkinter 기반 최소 Desktop UI를 제공합니다. `FinanceDataMart_Installer.exe`는 AppData 설치를 돕는 부트스트랩 인스톨러이며, 완전한 무설치/무의존성 단일 앱은 아닙니다.
+- **CLI 우선 및 최소 UI 제공**: 기본 실행은 CLI 스크립트 기반이며, 보조 수단으로 tkinter 기반 최소 Desktop UI를 제공합니다. `FinanceDataMart_Setup.exe`는 Python 런타임과 의존 라이브러리를 포함한 독립 실행형 AppData 설치 파일이며, 설치 후 `%LOCALAPPDATA%\FinanceDataMart\FinanceDataMart.exe`를 실행합니다.
 - **Lightweight 스택**: DuckDB, Parquet와 같은 중량 데이터베이스나 바이너리 포맷은 배제하고, Pandas와 CSV 파일 포맷만을 활용합니다.
 - **원본 보존**: Raw Excel 파일은 **읽기 전용**으로만 처리하며, 값을 수정하거나 시트를 추가하지 않습니다.
 - **익명 데이터**: 저장소 내에는 회사 실명, 실제 매출 금액 등 어떠한 실제 민감 정보도 포함하지 않으며, 오직 가상 데이터(Customer A, M-100 등)로만 테스트를 진행합니다.

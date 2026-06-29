@@ -16,6 +16,17 @@ def clean_build_folders(project_root: Path):
             except Exception as e:
                 print(f" - Warning: Failed to clean {folder.name}: {e}")
 
+    remove_generated_specs(project_root)
+
+
+def remove_generated_specs(project_root: Path):
+    for spec_file in project_root.glob("FinanceDataMart*.spec"):
+        try:
+            spec_file.unlink()
+            print(f" - Removed generated spec: {spec_file.name}")
+        except Exception as e:
+            print(f" - Warning: Failed to remove {spec_file.name}: {e}")
+
 def main():
     print("=========================================================")
     print("   Finance DataMart - Standalone & Setup Builder         ")
@@ -37,6 +48,18 @@ def main():
         "--onefile",
         "--noconsole",
         "--name", "FinanceDataMart",
+        "--paths", str(project_root),
+        "--hidden-import", "app.ui_app",
+        "--hidden-import", "app.main",
+        "--hidden-import", "app.config_loader",
+        "--hidden-import", "app.file_scanner",
+        "--hidden-import", "app.excel_reader",
+        "--hidden-import", "app.transformer",
+        "--hidden-import", "app.report_generator",
+        "--hidden-import", "app.validator",
+        "--hidden-import", "app.logger_setup",
+        "--hidden-import", "app.column_inventory",
+        "--hidden-import", "scripts.pre_release_check",
         str(gui_entry)
     ]
     
@@ -53,7 +76,7 @@ def main():
     print("\n[Phase 2/2] Compiling Setup Installer (FinanceDataMart_Setup.exe)...")
     setup_entry = project_root / "scripts" / "setup_installer.py"
     
-    # 임베딩할 자산 목록 (FinanceDataMart.exe를 포함하여 전체 36종 소스/문서 바인딩)
+    # 임베딩할 자산 목록 (FinanceDataMart.exe, 문서, 샘플 워크스페이스 바인딩)
     add_data_targets = [
         ("dist/FinanceDataMart.exe", "."),  # 1단계의 컴파일 결과물
         ("app", "app"),
@@ -85,6 +108,7 @@ def main():
         "--onefile",
         "--console",
         "--name", "FinanceDataMart_Setup",
+        "--paths", str(project_root),
     ]
 
     for src, dest in add_data_targets:
@@ -106,6 +130,7 @@ def main():
     print("SUCCESS: Standalone Setup installer generated successfully!")
     print(f"   Target Setup File: {compiled_setup}")
     print("=========================================================")
+    remove_generated_specs(project_root)
 
 if __name__ == "__main__":
     main()

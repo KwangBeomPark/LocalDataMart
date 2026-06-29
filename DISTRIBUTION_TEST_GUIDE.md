@@ -7,7 +7,7 @@
 ---
 
 ## 🚫 1. 배포 사양 및 전제 조건
-1. **자가 설치 인스톨러 지원**: 본 프로젝트는 AppData 설치를 자동화하는 `FinanceDataMart_Installer.exe`를 지원합니다. 단, 대상 PC에 Python 3.8 이상이 설치되어 있고 `py` 또는 `python` 명령이 PATH에서 실행 가능해야 합니다.
+1. **독립 실행형 Setup 지원**: 본 프로젝트는 AppData 설치를 자동화하는 `FinanceDataMart_Setup.exe`를 지원합니다. 대상 PC에 Python이 설치되어 있지 않고 인터넷 연결이 없어도 실행할 수 있도록 Python 런타임과 의존 라이브러리를 함께 패키징합니다.
 2. **Source-only 배포 병행**: 수동 수정을 희망하는 개발자를 위해 순수 소스코드 형태의 배포도 병행합니다. (Python 3.8 이상 필요)
 3. **가상 데이터 모델**: 본 저장소에는 실제 사내 데이터가 포함되어 있지 않습니다. 테스트 구동에 사용되는 데이터와 설정 파일은 `scripts/create_sample_data.py` 스크립트를 통해 로컬에서 가상으로 모조 생성됩니다.
 4. **MIT 라이선스**: 본 프로젝트는 `LICENSE` 파일에 기재된 MIT 라이선스 규정을 따릅니다.
@@ -17,10 +17,10 @@
 ## 🚀 2. 다른 PC에서의 설치 테스트 및 검증 흐름
 
 ### 방법 A: 자가 설치 인스톨러를 이용한 자동 설치 (권장)
-1. GitHub Releases 페이지에서 `FinanceDataMart_Installer.exe`를 다운로드합니다.
+1. GitHub Releases 페이지에서 `FinanceDataMart_Setup.exe`를 다운로드합니다.
 2. 다운로드한 인스톨러를 더블 클릭하여 실행합니다.
-   - 프로그램이 실행되면 자동으로 사용자의 **AppData** 로컬 폴더(`C:\Users\<username>\AppData\Local\FinanceDataMart`)에 배포 자산 36종을 복사합니다.
-   - 해당 폴더 내에 `.venv` 가상환경을 구축하고 `pip install` 및 `create_sample_data.py`를 순차 가동합니다.
+   - 프로그램이 실행되면 자동으로 사용자의 **AppData** 로컬 폴더(`C:\Users\<username>\AppData\Local\FinanceDataMart`)에 `FinanceDataMart.exe`, 문서, 가상 샘플 `sample_workspace`를 복사합니다.
+   - Python 가상환경 생성이나 `pip install` 없이 설치된 `FinanceDataMart.exe`와 내장 샘플 워크스페이스를 바로 사용할 수 있습니다.
    - 완료되면 사용자 바탕화면(Desktop)에 `FinanceDataMart` 바로가기 아이콘이 자동 생성됩니다.
 3. 바탕화면의 바로가기를 더블 클릭하여 GUI 앱이 정상적으로 뜨는지 교차 검증합니다.
 
@@ -85,12 +85,12 @@ python -c "from app.ui_app import DataMartUI; print('UI import ok')"
 
 수동으로 GitHub 리포지토리에 푸시할 때 업로드되는 대상과 로컬 전용 격리 대상은 다음과 같습니다. 사용자는 `.gitignore` 설정에 의해 격리 대상이 유출되지 않도록 유지해야 합니다.
 
-### A. GitHub 업로드 대상 (RELEASE_MANIFEST.md 기준 36종 자산)
-- 핵심 소스코드: `app/*.py` (11종), `scripts/*.py` (6종)
+### A. GitHub 업로드 대상 (RELEASE_MANIFEST.md 기준 38종 자산)
+- 핵심 소스코드: `app/*.py` (11종), `scripts/*.py` (8종)
 - 마스터 문서: `README.md`, `LICENSE`, `requirements.txt`, `.gitignore`
 - 상세 안내서: `USER_GUIDE.md`, `KNOWN_LIMITATIONS.md`, `MAINTENANCE.md`, `RELEASE_NOTES.md`, `THIRD_PARTY_NOTICES.md`
 - 배포/검증 지침서: `GITHUB_RELEASE_GUIDE.md`, `PUBLIC_RELEASE_CHECKLIST.md`, `RELEASE_MANIFEST.md`, `OFFICIAL_RELEASE_HANDOFF.md`, `POST_RELEASE_CHECKLIST.md`, `LICENSE_DECISION_GUIDE.md`, `DISTRIBUTION_TEST_GUIDE.md` (본 문서)
-- GitHub Release 첨부 파일: `dist/FinanceDataMart_Installer.exe`는 저장소 커밋 대상이 아니라 Release asset으로만 업로드합니다.
+- GitHub Release 첨부 파일: `dist/FinanceDataMart_Setup.exe`는 저장소 커밋 대상이 아니라 Release asset으로만 업로드합니다.
 
 ### B. 로컬 격리 및 제외 대상 (GitHub 업로드 절대 금지)
 - 파이썬 가상환경: `.venv/`, `venv/`, `env/` 등
@@ -102,6 +102,6 @@ python -c "from app.ui_app import DataMartUI; print('UI import ok')"
   - `90_Config/column_inventory.xlsx`
   - `99_Logs/`의 실행 로그
 - IDE 로컬 설정: `.vscode/`, `.idea/`, `.gemini/`
-- PyInstaller 로컬 빌드 산출물: `build/`, `dist/`, `*.spec` (단, `dist/FinanceDataMart_Installer.exe`는 GitHub Release asset으로 별도 첨부 가능)
+- PyInstaller 로컬 빌드 산출물: `build/`, `dist/`, `*.spec` (단, `dist/FinanceDataMart_Setup.exe`는 GitHub Release asset으로 별도 첨부 가능)
 
 `sample_workspace/`는 `python scripts/create_sample_data.py` 실행 시 다른 PC에서 다시 생성되는 폴더이므로 배포 저장소에는 포함하지 않습니다.

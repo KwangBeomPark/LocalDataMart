@@ -40,4 +40,4 @@
 - **메이저 버전 (vX.0.0)**: 하위 호환성이 깨지는 대규모 아키텍처적 개편 시
 - **마이너 버전 (v1.X.0)**: 기존 엔진 호환성을 유지하며 신규 data_group 추가 또는 Report View 집계 기능 고도화 시
 - **패치 버전 (v1.0.X)**: 기존 설정을 유지한 채 버그 핫픽스 및 예외 처리 구문 보완 시
-- **배포 방식 관리**: 핫픽스 및 기능 패치 버전은 소스코드 배포를 기본으로 하며, 인스톨러 관련 변경이 있을 때만 `scripts/build_installer.py`로 `FinanceDataMart_Installer.exe`를 재빌드하고 GitHub Release asset을 갱신합니다.
+- **배포 방식 관리**: 핫픽스 및 기능 패치 버전은 소스코드 배포를 기본으로 하며, 독립 실행 Setup 관련 변경이 있을 때만 `scripts/build_standalone.py`로 `FinanceDataMart_Setup.exe`를 재빌드하고 GitHub Release asset을 갱신합니다.

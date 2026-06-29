@@ -3,6 +3,7 @@ import sys
 import shutil
 import subprocess
 from pathlib import Path
+import re
 
 # 프로젝트 루트를 임포트 패스에 추가 (로컬 빌드/실행 대비)
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -12,6 +13,18 @@ def get_bundle_dir():
     if getattr(sys, 'frozen', False):
         return Path(sys._MEIPASS)
     return Path(__file__).resolve().parent.parent
+
+
+def sanitize_message(value) -> str:
+    text = "" if value is None else str(value)
+    replacements = [
+        str(Path.home()),
+        str(Path.home()).replace("\\", "/"),
+    ]
+    for path_text in replacements:
+        if path_text:
+            text = text.replace(path_text, "[user_home]")
+    return re.sub(r"[A-Za-z]:[\\/][^\s,\")']+", "[local_path]", text)
 
 def copy_standalone_files(src_dir: Path, dest_dir: Path):
     """임베딩된 standalone GUI 파일 및 문서 자산을 AppData 디렉토리로 안전 복사합니다."""
@@ -114,7 +127,7 @@ def main():
     dest_dir = appdata_local / "FinanceDataMart"
     src_dir = get_bundle_dir()
     
-    print(f"Target Installation Directory: {dest_dir}")
+    print("Target Installation Directory: %LOCALAPPDATA%\\FinanceDataMart")
     print("---------------------------------------------------------")
     
     try:
@@ -134,7 +147,7 @@ def main():
         
     except Exception as e:
         print("\nERROR: Setup failed due to the following error:")
-        print(f"Error details: {e}")
+        print(f"Error details: {sanitize_message(e)}")
         print("=========================================================")
         sys.exit(1)
 

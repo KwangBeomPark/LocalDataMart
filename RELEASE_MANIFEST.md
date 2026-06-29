@@ -42,10 +42,12 @@
 - `app/ui_app.py`: tkinter 기반 비동기 데스크톱 GUI 제어반 모듈
 - `app/column_inventory.py`: Raw 엑셀 컬럼 인벤토리 분석 집계 추출 모듈
 
-### 4) 운영 및 검증용 스크립트 (`scripts/` 폴더 - 6개)
+### 4) 운영 및 검증용 스크립트 (`scripts/` 폴더 - 8개)
 - `scripts/create_sample_data.py`: 가상 데이터 및 설정 템플릿 복구 유틸리티
 - `scripts/create_column_inventory.py`: 신규 파일의 스키마 분석용 인벤토리 추출기
 - `scripts/pre_release_check.py`: 배포 전 자가 무결성 7대 진단 검증기 (★ PASS 획득 필수)
 - `scripts/run_desktop_app.py`: 데스크톱 GUI 원클릭 가동용 래퍼 스크립트
 - `scripts/installer.py`: AppData 설치 및 가상환경, 바로가기를 자동 생성해주는 자가 설치 스크립트
 - `scripts/build_installer.py`: 자가 설치 스크립트를 PyInstaller로 단일 exe로 빌드해주는 배포 스크립트
+- `scripts/setup_installer.py`: Python 미설치 PC용 standalone 앱을 AppData에 배치하는 Setup 엔트리포인트
+- `scripts/build_standalone.py`: `FinanceDataMart.exe`와 `FinanceDataMart_Setup.exe`를 생성하는 standalone 빌드 스크립트
