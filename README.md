@@ -2,7 +2,7 @@
 
 이 도구는 여러 월별 Excel Raw Data 파일을 폴더 단위로 관리하고, 사용자가 정의한 Excel Config 기준에 따라 필요한 컬럼만 정제·통합한 뒤, Excel 등 리포트 도구에서 즉시 활용할 수 있는 Clean Table과 Report View(Summary)를 생성하는 로컬 데이터마트 빌더의 최소 기능 제품(MVP)입니다.
 
-현재 구현된 단계는 **Phase 0 ~ Phase 20 배포 버전 GitHub 업로드 및 다른 PC 설치 테스트 준비**로, `Sales_Closing` 및 `AR_Detail` 가상 데이터를 기반으로 전체적인 데이터 흐름(Raw Excel → Config → Clean CSV → Summary CSV)이 작동하며, Config 무결성 검증, Reconciliation(대조 정합성 검증), tkinter 기반 Desktop UI, pre-release 자가 무결성 진단 스크립트, 오픈소스 공개 수동 배포 핸드오프 지침, 릴리즈 대상 매니페스트 목록, MIT 라이선스 파일, 그리고 다른 PC 설치 테스트 가이드가 모두 정립되어 있습니다. 본 배포는 오직 소스코드만 릴리즈하는 Source-only 형태이며 단일 exe 실행 파일은 제공하지 않습니다.
+현재 구현된 단계는 **Phase 0 ~ Phase 21 AppData 인스톨러 배포 테스트 준비**로, `Sales_Closing` 및 `AR_Detail` 가상 데이터를 기반으로 전체적인 데이터 흐름(Raw Excel → Config → Clean CSV → Summary CSV)이 작동하며, Config 무결성 검증, Reconciliation(대조 정합성 검증), tkinter 기반 Desktop UI, pre-release 자가 무결성 진단 스크립트, MIT 라이선스 파일, 다른 PC 설치 테스트 가이드, 그리고 AppData 설치용 부트스트랩 인스톨러가 정립되어 있습니다. GitHub 저장소에는 소스코드와 문서를 올리고, GitHub Release에는 선택적으로 `FinanceDataMart_Installer.exe`를 첨부합니다.
 
 ## 📖 배포 문서 가이드
 보다 상세한 동작 이해와 제한 사항 확인을 위해 아래 문서를 참고하십시오:
@@ -24,7 +24,7 @@
 
 ## 🚫 중요 원칙 및 제약 사항 (절대 준수)
 - **공식 라이선스**: 본 프로젝트는 MIT License로 배포되며, 재배포 시 루트의 `LICENSE` 고지 전문을 유지해야 합니다.
-- **CLI 우선 및 최소 UI 제공**: 기본 실행은 CLI 스크립트 기반이며, 보조 수단으로 tkinter 기반 최소 Desktop UI를 제공합니다. exe 패키징이나 복잡한 설정 화면은 포함하지 않습니다.
+- **CLI 우선 및 최소 UI 제공**: 기본 실행은 CLI 스크립트 기반이며, 보조 수단으로 tkinter 기반 최소 Desktop UI를 제공합니다. `FinanceDataMart_Installer.exe`는 AppData 설치를 돕는 부트스트랩 인스톨러이며, 완전한 무설치/무의존성 단일 앱은 아닙니다.
 - **Lightweight 스택**: DuckDB, Parquet와 같은 중량 데이터베이스나 바이너리 포맷은 배제하고, Pandas와 CSV 파일 포맷만을 활용합니다.
 - **원본 보존**: Raw Excel 파일은 **읽기 전용**으로만 처리하며, 값을 수정하거나 시트를 추가하지 않습니다.
 - **익명 데이터**: 저장소 내에는 회사 실명, 실제 매출 금액 등 어떠한 실제 민감 정보도 포함하지 않으며, 오직 가상 데이터(Customer A, M-100 등)로만 테스트를 진행합니다.
@@ -35,8 +35,11 @@
 
 본 프로젝트는 두 가지 설치 방식을 지원합니다.
 
-### 방법 A: 자가 설치 인스톨러 사용 (권장 - 비개발자 및 테스트 환경)
-GitHub Releases에서 제공하는 `FinanceDataMart_Installer.exe`를 다운로드하여 더블 클릭해 실행하면, 사용자의 **AppData** 폴더(`C:\Users\<username>\AppData\Local\FinanceDataMart`)에 소스코드 복사, 가상환경(`.venv`) 구축, 의존성 패키지 설치, 그리고 바탕화면 바로가기 아이콘 생성을 **클릭 한 번으로 자동 완결**합니다.
+### 방법 A: 독립 실행형 Setup 인스톨러 사용 (권장 - 파이썬 미설치 PC 및 격리 환경)
+GitHub Releases에서 제공하는 `FinanceDataMart_Setup.exe`를 다운로드하여 실행하면, 대상 PC에 **Python이 설치되어 있지 않고 인터넷 연결이 끊겨 있어도** 사용자의 **AppData** 로컬 폴더(`%LOCALAPPDATA%\FinanceDataMart`)에 실제 GUI 단일 실행 파일(`FinanceDataMart.exe`), 마스터 가이드 문서, 그리고 가상 샘플 데이터마트 구조(`sample_workspace`)를 1초 만에 자동 배치하고 바탕화면에 실행 바로가기를 생성합니다.
+
+> [!WARNING]
+> Windows 환경에 따라 최초 설치 실행 시 코드 서명 미지원을 이유로 **Windows SmartScreen(보호 팝업)** 창이 뜰 수 있습니다. 이 경우 "추가 정보 ➔ 실행"을 클릭하여 설치를 진행하십시오.
 
 ### 방법 B: 소스코드 수동 설치 (Windows PowerShell 기준)
 본 프로젝트는 **Python 3.8 이상** 환경에서 구동됩니다. 다른 PC에서 수동 설치 및 검증을 진행할 때는 패키지 충돌 방지를 위해 아래와 같이 파이썬 가상환경을 활성화한 뒤 의존 패키지를 설치하십시오.

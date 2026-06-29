@@ -5,9 +5,9 @@
 ---
 
 ## 🚫 1. 배포 사양 및 제약 사항
-1. **Source-only 배포**: 본 릴리즈는 소스코드 공개 형태이며, 컴파일된 단일 실행 파일(`.exe`)이나 자동 인스톨러는 제공하지 않습니다.
+1. **독립 실행형 Setup 배포**: 본 릴리즈는 소스코드 공개를 기본으로 하며, 파이썬이 설치되지 않은 PC 대응을 위해 바이너리가 포함된 `FinanceDataMart_Setup.exe`를 GitHub Release asset으로 첨부하여 제공할 수 있습니다.
 2. **CI/CD 및 Actions 배포 배제**: 원격 빌드나 자동 테스트 통합(GitHub Actions)은 내장되어 있지 않으며, 모든 검증은 로컬 터미널에서 수동으로 이행됩니다.
-3. **다른 PC 설치 테스트 목적**: 본 배포본은 다양한 환경의 다른 PC에서 소스코드를 복사/클론하여 의존 패키지 설치부터 데이터마트 기동 및 무결성 진단까지 전 과정을 수동으로 검증할 수 있도록 돕는 것을 목표로 합니다.
+3. **다른 PC 설치 테스트 목적**: 본 배포본은 다양한 환경의 다른 PC에서 소스코드 및 독립 실행형 인스톨러를 다운로드하여 데이터마트 가동 및 무결성 진단까지 전 과정을 검증하는 것을 목표로 합니다.
 
 ---
 
@@ -58,7 +58,7 @@ git branch -M main
 git add .
 
 # 2. 최초 릴리즈 후보 버전 커밋 메시지 작성
-git commit -m "Initial commit of v1.0.0-RC1 (Source-only Release Candidate)"
+git commit -m "Release v1.0.0-RC1 with AppData installer support"
 
 # 3. 원격 저장소 최초 푸시
 git push -u origin main
@@ -72,7 +72,7 @@ git tag -a v1.0.0-RC1 -m "Release Candidate 1"
 # 2. 원격 저장소에 태그 푸시
 git push origin --tags
 ```
-이후 GitHub 저장소 페이지의 `Releases` 탭으로 이동하여 `Draft a new release` 버튼을 누르고 `v1.0.0-RC1` 태그를 지정한 후, `RELEASE_NOTES.md` 본문 내용을 설명에 첨부하여 배포를 완료하십시오.
+이후 GitHub 저장소 페이지의 `Releases` 탭으로 이동하여 `Draft a new release` 버튼을 누르고 `v1.0.0-RC1` 태그를 지정한 후, `RELEASE_NOTES.md` 본문 내용을 설명에 첨부하십시오. 인스톨러를 제공하는 경우 `dist/FinanceDataMart_Setup.exe`를 Release asset으로 첨부합니다.
 
 ### 5단계: 다른 PC 설치 테스트 연동 및 피드백 접수
 - 업로드가 완료되면 다른 검증 PC(또는 환경)를 준비하여 [배포 버전 설치 테스트 가이드 (DISTRIBUTION_TEST_GUIDE.md)](DISTRIBUTION_TEST_GUIDE.md) 지침에 따라 가상환경 구축 및 파이프라인 구동이 원활하게 통과되는지 확인하고, 피드백을 전달하십시오.

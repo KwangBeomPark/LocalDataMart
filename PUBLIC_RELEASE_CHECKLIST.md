@@ -22,7 +22,7 @@
 - [ ] 프로젝트 루트 디렉토리에 공식 `LICENSE` 파일이 존재하고 MIT License 전문이 포함되어 있는지 확인합니다.
 
 ### 5. 미지원/금지 기술의 유입 유무 재확인
-- [ ] 파이썬 패키지 의존성 목록(`requirements.txt`) 및 소스코드 전반에 `fastapi`, `flask`, `duckdb`, `parquet`, `pyside6`, `pyinstaller` 등의 금지된 단어가 혼입되지 않았는지 확인합니다.
+- [ ] 파이썬 패키지 의존성 목록(`requirements.txt`) 및 소스코드 전반에 `fastapi`, `flask`, `duckdb`, `parquet`, `pyside6` 등의 금지된 단어가 혼입되지 않았는지 확인합니다. `pyinstaller`는 `scripts/build_installer.py`와 인스톨러 문서에서만 허용합니다.
 
 ### 6. Git 저장소 위생 관리 및 캐시 파기
 - [ ] 소스코드 및 문서 릴리즈 전 `git status`를 구동하여 런타임 시에 생성된 분석 파일(`column_inventory.xlsx`), 대조 정합성 로그(`validation_log.csv`), 파일 통계 로그(`refresh_log.csv`) 등 임시 산출물들이 트래킹 리스트에서 완벽히 격리(.gitignore 적용)되었는지 검수합니다.

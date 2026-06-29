@@ -12,9 +12,9 @@
 
 ---
 
-## 📦 2. Source-only 배포 사양 최종 선언
-본 프로젝트는 순수 소스코드 배포판(`Source-only Release`)입니다. 아래 미지원 기능이 릴리즈 사양이나 매뉴얼에 포함되어 있지 않음을 재확인하십시오.
-- **바이너리 미지원**: PyInstaller 기반 단일 `.exe` 실행 파일 또는 배포용 인스톨러 패키지는 제공되지 않습니다.
+## 📦 2. 배포 사양 최종 선언
+본 프로젝트는 소스코드 배포판을 기본으로 하며, GitHub Release asset으로 AppData 설치용 `FinanceDataMart_Installer.exe`를 선택 제공할 수 있습니다. 아래 제약을 재확인하십시오.
+- **완전 독립형 앱 아님**: 인스톨러는 AppData 복사, `.venv` 생성, 의존성 설치, 샘플 생성, 바로가기 생성을 자동화하지만 대상 PC에 Python 3.8 이상과 인터넷 연결이 필요합니다.
 - **CI/CD 자동화 배제**: GitHub Actions 워크플로우 또는 테스트 파이프라인 연동 기능은 포함되어 있지 않으며, 배포는 전적으로 사용자의 수동 명령어 기반으로 가동됩니다.
 - **플랫폼 제약성**: DuckDB, Parquet, Power BI, ODBC, SharePoint 연동은 포함되어 있지 않습니다.
 
@@ -48,7 +48,7 @@ git remote add origin https://github.com/사용자계정/LocalDataMart.git
 git add .
 
 # 5단계: 첫 번째 공식 릴리즈 커밋 작성
-git commit -m "Release v1.0.0-RC1 (Source-only)"
+git commit -m "Release v1.0.0-RC1 with AppData installer support"
 
 # 6단계: 릴리즈 태깅 (Release Candidate 1)
 git tag -a v1.0.0-RC1 -m "Release Candidate 1"

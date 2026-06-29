@@ -174,7 +174,7 @@ class DataMartUI:
         else:
             self.log_info_label.config(text="Recent Log: None (run Refresh first)")
 
-    def _run_command_async(self, cmd_args, task_name):
+    def _run_module_async(self, target_func, task_name):
         if self.is_processing:
             messagebox.showinfo("Running", "Another task is already running.")
             return
@@ -185,36 +185,38 @@ class DataMartUI:
         
         def run():
             try:
-                # 윈도우 cmd 콘솔창 팝업 제거를 위한 startupinfo 주입
-                startupinfo = None
-                if os.name == 'nt':
-                    startupinfo = subprocess.STARTUPINFO()
-                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-                    
-                result = subprocess.run(
-                    [sys.executable] + cmd_args,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    encoding="utf-8",
-                    startupinfo=startupinfo,
-                    cwd=PROJECT_ROOT
-                )
-                
-                # 메인 스레드에서 UI를 업데이트하기 위해 root.after 활용
-                if result.returncode == 0:
+                target_func()
+                self.root.after(0, lambda: self._on_task_success(task_name))
+            except SystemExit as se:
+                if se.code == 0 or se.code is None:
                     self.root.after(0, lambda: self._on_task_success(task_name))
                 else:
-                    # 상세 에러 원인 한줄 요약만 추출
-                    err_lines = [line.strip() for line in result.stderr.split("\n") if line.strip()]
-                    last_err = err_lines[-1] if err_lines else "Unknown error"
-                    safe_err = self._sanitize_message(last_err)
+                    safe_err = f"SystemExit code {se.code}"
                     self.root.after(0, lambda: self._on_task_error(task_name, safe_err))
             except Exception as e:
                 safe_err = self._sanitize_message(e)
                 self.root.after(0, lambda: self._on_task_error(task_name, safe_err))
                 
         threading.Thread(target=run, daemon=True).start()
+
+    def run_refresh_logic(self):
+        from app.main import main as run_pipeline
+        run_pipeline()
+
+    def run_inventory_logic(self):
+        from app.column_inventory import ColumnInventoryGenerator
+        generator = ColumnInventoryGenerator(
+            config_path="sample_workspace/90_Config/config.xlsx",
+            output_path="sample_workspace/90_Config/column_inventory.xlsx"
+        )
+        generator.generate()
+
+    def run_prerelease_logic(self):
+        from scripts.pre_release_check import PreReleaseChecker
+        checker = PreReleaseChecker()
+        success = checker.run_checks()
+        if not success:
+            raise RuntimeError("Pre-release check detected failures.")
 
     def _on_task_success(self, task_name):
         self.is_processing = False
@@ -228,18 +230,17 @@ class DataMartUI:
         self._set_buttons_state(tk.NORMAL)
         self.status_label.config(text=f"Status: {task_name} Failed", fg="#c0392b")
         self._update_log_status()
-        # 긴 traceback 대신 에러 요약 메시지만 알림
         messagebox.showerror("Error", f"Failed to execute {task_name}.\n\nReason: {error_msg}")
 
     # --- 버튼 핸들러 ---
     def on_refresh(self):
-        self._run_command_async(["-m", "app.main"], "Refresh DataMart")
+        self._run_module_async(self.run_refresh_logic, "Refresh DataMart")
 
     def on_generate_inventory(self):
-        self._run_command_async(["scripts/create_column_inventory.py"], "Generate Column Inventory")
+        self._run_module_async(self.run_inventory_logic, "Generate Column Inventory")
 
     def on_pre_release_check(self):
-        self._run_command_async(["scripts/pre_release_check.py"], "Pre-release Check")
+        self._run_module_async(self.run_prerelease_logic, "Pre-release Check")
 
     def _open_path(self, path, is_file=False):
         """지정된 경로를 Windows 탐색기 혹은 기본 연결 프로그램으로 안전하게 엽니다."""

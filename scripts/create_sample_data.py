@@ -186,8 +186,12 @@ def create_raw_excel_files():
     pd.DataFrame(feb_ar).to_excel(ar_dir / "AR_Detail_2026_02.xlsx", sheet_name="Data", index=False)
     print(f"Sample Raw Excel created: {ar_dir / 'AR_Detail_2026_02.xlsx'}")
 
-if __name__ == "__main__":
+def generate_all_samples(dest_dir=None):
+    """지정 디렉토리 기준(또는 현재 기준)으로 전체 폴더 및 샘플 데이터 구조를 생성합니다."""
     create_folders()
     create_config_excel()
     create_raw_excel_files()
     print("All sample data and configuration generated successfully!")
+
+if __name__ == "__main__":
+    generate_all_samples()

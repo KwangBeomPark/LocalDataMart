@@ -11,7 +11,7 @@ def main():
     project_root = Path(__file__).resolve().parent.parent
     installer_script = project_root / "scripts" / "installer.py"
     
-    # 배포 34종 자산을 PyInstaller 리소스 패킹용 파라미터로 매핑
+    # 배포 대상 자산을 PyInstaller 리소스 패킹용 파라미터로 매핑
     add_data_targets = [
         ("app", "app"),
         ("scripts", "scripts"),

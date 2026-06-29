@@ -4,6 +4,31 @@ import shutil
 import subprocess
 from pathlib import Path
 
+def find_system_python():
+    """Return a system Python command usable for creating a venv."""
+    candidates = [
+        ["py", "-3"],
+        ["python"],
+        ["python3"],
+    ]
+    for cmd in candidates:
+        executable = shutil.which(cmd[0])
+        if not executable:
+            continue
+        try:
+            subprocess.run(
+                cmd + ["--version"],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            return cmd
+        except Exception:
+            continue
+    raise RuntimeError(
+        "Python 3 was not found on PATH. Install Python 3.8+ and enable PATH, then rerun this installer."
+    )
+
 def get_bundle_dir():
     """PyInstaller 런타임 임시 풀림 경로 또는 로컬 스크립트 실행 경로를 반환합니다."""
     if getattr(sys, 'frozen', False):
@@ -60,9 +85,10 @@ def setup_virtual_environment(dest_dir: Path):
     """AppData 설치 경로 내에 파이썬 가상환경을 구성하고 라이브러리를 설치합니다."""
     print("Step 2: Configuring Python virtual environment (.venv)...")
     venv_dir = dest_dir / ".venv"
+    python_cmd = find_system_python()
     
     if not venv_dir.exists():
-        subprocess.run(["python", "-m", "venv", str(venv_dir)], check=True, cwd=dest_dir)
+        subprocess.run(python_cmd + ["-m", "venv", str(venv_dir)], check=True, cwd=dest_dir)
         print(" - Virtual environment (.venv) created successfully.")
     else:
         print(" - Virtual environment (.venv) already exists. Skipping creation.")

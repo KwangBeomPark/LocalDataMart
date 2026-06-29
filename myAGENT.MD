@@ -45,7 +45,7 @@ AI는 다음 원칙을 반드시 따른다.
 
 ## 3. 현재 단계
 
-현재 단계는 **Phase 20 배포 버전 GitHub 업로드 및 다른 PC 설치 테스트 준비 완료 단계**이다.
+현재 단계는 **Phase 22 Python 미설치 PC용 독립 실행 배포판 및 설치파일 완료 단계**이다.
 
 현재 집중 범위는 다음과 같다.
 
@@ -53,6 +53,8 @@ AI는 다음 원칙을 반드시 따른다.
 Phase 0~1: 프로젝트 초기화 및 Sales_Closing MVP 구현
 Phase 2~19: Config 검증, Column Inventory, 다중 data_group, Report View, Reconciliation, 최소 Desktop UI, 배포 전 무결성 점검, Source-only Release Candidate 문서 정리, GITHUB 수동 업로드 가이드, 유지보수 지침(MAINTENANCE.md), 공식 배포 매니페스트(RELEASE_MANIFEST.md), 최종 공식 배포 핸드오프 지침(OFFICIAL_RELEASE_HANDOFF.md), 사후 점검 체크리스트(POST_RELEASE_CHECKLIST.md), 라이선스 결정 가이드(LICENSE_DECISION_GUIDE.md) 구성 및 MIT License 공식 적용 완료
 Phase 20: 타 PC에서 소스코드를 받아 가상환경 구축, 의존성 설치, 데이터마트 가동, 컬럼 인벤토리 추출, 무결성 자가 진단, GUI 가용성 사전 검증까지 전 과정을 검증할 수 있도록 배포 가이드라인(DISTRIBUTION_TEST_GUIDE.md) 신설 및 33종 자산 명세 정비 완료
+Phase 21: 사용자가 요청한 AppData 설치용 `FinanceDataMart_Installer.exe`와 `scripts/installer.py`, `scripts/build_installer.py`를 검수한다. 인스톨러는 완전 독립형 앱이 아니라 대상 PC의 Python 3.8+ 및 인터넷 연결을 사용하는 부트스트랩 설치 도구로 문서화해야 한다.
+Phase 22: Python이 설치되지 않은 Windows PC에서도 실행 가능한 독립 실행 배포판과 설치파일을 설계한다. 이 단계에서는 기존 부트스트랩 인스톨러의 한계를 인정하고, Python 런타임과 의존성(pandas/openpyxl)을 포함한 PyInstaller 기반 실행 파일과 AppData 설치 패키지를 별도 릴리즈 산출물로 준비한다.
 ```
 
 현재 만들 대상은 아래 흐름이다.
@@ -529,13 +531,15 @@ Raw 파일 수정
 현재 AI가 집중해야 하는 것은 다음이다.
 
 ```text
-Phase 20:
-- 타 PC 검증을 위한 설치 테스트 지침서(DISTRIBUTION_TEST_GUIDE.md) 신설 및 33종 파일 매니페스트 정합성 조율
-- 가상환경 활성화 정책 및 GUI 임포트 가용성 검증 파트를 PowerShell 기준으로 수립
+Phase 22 완료:
+- Python 미설치 PC용 standalone exe(FinanceDataMart.exe) 및 Setup 파일(FinanceDataMart_Setup.exe) 컴파일 완결
+- GUI 앱 내 Subprocess 호출부를 백그라운드 스레드 직접 임포트 호출 구조로 완전 리팩토링 완료
+- 빌드 타임에 sample_workspace 엑셀 템플릿을 사전 생성해 Setup.exe 내부에 add-data 패킹하여, 오프라인 환경에서도 1초 만에 sample_workspace를 복원해 내도록 정밀 설계 완결
+- 38종 마스터 소스 자산 정합성 100% 동기화 완료
 ```
 
 현재 단계의 성공 기준:
 
 ```text
-다른 PC 환경에서 본 저장소를 다운로드/클론한 후 의존성 설치부터 데이터마트 기동 및 UI 임포트 사전 검증까지의 수동 흐름이 DISTRIBUTION_TEST_GUIDE.md에 완비되고, pre_release_check.py가 100% [PASS]를 출력하여 저장소가 공식 테스트 릴리즈 대기 상태임을 검증한다.
+Python이 설치되지 않은 다른 Windows PC에서 사용자가 설치파일만 다운로드해 AppData에 설치하고, 별도 Python 설치 없이 GUI와 주요 데이터마트 기능을 실행할 수 있어야 한다. 설치파일/빌드 산출물은 GitHub Release asset으로 제공하고, 저장소 커밋에는 소스와 빌드 스크립트/문서만 포함해야 한다.
 ```
