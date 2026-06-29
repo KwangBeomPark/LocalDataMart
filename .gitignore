@@ -1,0 +1,24 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments and local env files
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# IDE settings and AI tool cache
+.idea/
+.vscode/
+.gemini/
+
+# OS temporary files
+.DS_Store
+Thumbs.db
+
+# Regenerated sample workspace, runtime outputs, and logs
+sample_workspace/
