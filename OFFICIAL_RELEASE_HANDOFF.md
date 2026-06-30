@@ -48,10 +48,10 @@ git remote add origin https://github.com/사용자계정/LocalDataMart.git
 git add .
 
 # 5단계: 첫 번째 공식 릴리즈 커밋 작성
-git commit -m "Release v1.0.0-RC1 with AppData installer support"
+git commit -m "Release v1.0.0-RC3 with GitHub Actions CI and quality gate"
 
-# 6단계: 릴리즈 태깅 (Release Candidate 1)
-git tag -a v1.0.0-RC1 -m "Release Candidate 1"
+# 6단계: 릴리즈 태깅 (Release Candidate 3)
+git tag -a v1.0.0-RC3 -m "Release Candidate 3"
 
 # 7단계: 원격 저장소로 코드 및 태그 푸시
 git push -u origin main
