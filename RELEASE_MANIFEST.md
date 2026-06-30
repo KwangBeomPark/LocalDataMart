@@ -4,7 +4,7 @@
 
 ---
 
-## 📂 1. 배포 대상 파일 목록 (총 42종)
+## 📂 1. 배포 대상 파일 목록 (총 43종)
 
 ### 1) 프로젝트 핵심 설정 및 메인 가이드 (7개)
 - `README.md`: 프로젝트 개요, 퀵스타트 및 핵심 제약 조건 명세서
@@ -15,7 +15,7 @@
 - `AI_CODE_MAP.MD`: 프로젝트 소스코드 디렉토리 지도 및 컴포넌트 해설서
 - `PROJECT_ROADMAP.MD`: 데이터마트 기능 고도화 로드맵
 
-### 2) 배포 가이드 및 사용자 지침 문서 (13개)
+### 2) 배포 가이드 및 사용자 지침 문서 (14개)
 - `USER_GUIDE.md`: CLI/GUI 실행 순서 및 Config 시트 매핑 상세 기술문서
 - `KNOWN_LIMITATIONS.md`: 인메모리 OOM 한계 및 연동 플랫폼 미지원 고지서
 - `PUBLIC_RELEASE_CHECKLIST.md`: 보안 검열 및 수동 릴리즈 자가 체크리스트
@@ -29,6 +29,7 @@
 - `LICENSE_DECISION_GUIDE.md`: 사용자의 오픈소스 라이선스 검토 및 결정용 안내서
 - `DISTRIBUTION_TEST_GUIDE.md`: 타 PC에서의 소스코드 다운로드 및 가동성 검증용 다른 PC 설치 테스트 가이드
 - `PHASE23_EXTERNAL_TEST_REPORT.md`: Python 미설치 외부 Windows PC 설치 테스트 결과 기록 양식
+- `PHASE24_CI_TEST_REPORT.md`: GitHub Actions 원격 자동 검증 PASS 결과 기록 보고서
 
 ### 3) 정제 및 요약 엔진 모듈 (`app/` 폴더 - 11개)
 - `app/__init__.py`: 패키지 초기화 파일

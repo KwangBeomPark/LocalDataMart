@@ -69,9 +69,10 @@ python scripts/run_desktop_app.py
 
 ---
 
-## 📝 v1.0.0-RC3 (2026-06-30) - Phase 24 진행 중 배포판 (Actions 검증 대기)
+## 📝 v1.0.0-RC3 (2026-07-01) - Phase 24 완료 배포판 (Actions 검증 PASS)
 - **GitHub Actions CI 도입**: 원격 저장소 푸시 및 PR 시 코드 컴파일, 샘플 가상 데이터 생성, 메인 파이프라인 구동, 컬럼 인벤토리 분석, pre-release 무결성 진단을 자동으로 수행하는 `Finance DataMart CI` 연동 (.github/workflows/ci.yml 추가).
 - **배포 위생 자동 검사(Release Hygiene Check)**: Git tracked 목록을 역추적하여 `.gitignore` 대상(로컬 격리용 `tool/`, `sample_workspace/`, `build/`, `dist/`, 캐시/로그)이 실수로 업로드되는 것을 CI 상에서 원천 방어 (`scripts/check_release_hygiene.py` 연동).
 - **로컬 원클릭 품질 게이트(Local Quality Gate)**: CI와 동일한 7단계의 안전성 검증을 개발자 PC에서 단일 명령어로 원클릭 일괄 수행하는 로컬 전용 래퍼 통합 (`scripts/run_quality_gate.py` 추가).
-- **공식 배포 자산 42종 정합성 완성**: 신규 검증 스크립트 2종 및 CI 구성 파일을 추가 반영하여 배포 대상을 총 42종 사양으로 갱신 완료.
+- **GitHub Actions 원격 검증 PASS 확인**: `Finance DataMart CI` 워크플로우가 `main` 브랜치 커밋 `842c613c5e0f2ba098bb483032c8243c738456a3`에서 PASS 완료.
+- **공식 배포 자산 43종 정합성 완성**: 신규 검증 스크립트 2종, CI 구성 파일, Phase 24 원격 CI 결과 보고서를 추가 반영하여 배포 대상을 총 43종 사양으로 갱신 완료.
 - **로컬 전용 격리 유지**: `tool/` 폴더 내에 빌드 및 임시 산출물들을 보관하고 git 추적 대상에서 격리하는 배포 위생 원칙 고수.

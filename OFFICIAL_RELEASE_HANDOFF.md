@@ -44,7 +44,7 @@ git init -b main
 # 3단계: 원격 GitHub 저장소 매핑
 git remote add origin https://github.com/사용자계정/LocalDataMart.git
 
-# 4단계: RELEASE_MANIFEST.md의 42종 공식 파일 추가
+# 4단계: RELEASE_MANIFEST.md의 43종 공식 파일 추가
 git add .
 
 # 5단계: 첫 번째 공식 릴리즈 커밋 작성

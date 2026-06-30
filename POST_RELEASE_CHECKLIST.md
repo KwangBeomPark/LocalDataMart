@@ -7,7 +7,7 @@
 ## 📋 공개 후 즉시 확인 항목
 
 ### 1. 원격 저장소 파일 위생 검사
-- [ ] GitHub 웹 인터페이스에서 업로드된 파일 구조를 브라우징하여 `RELEASE_MANIFEST.md`에 명시된 42종의 공식 자산 외에 불필요한 임시 파일이 없는지 확인합니다.
+- [ ] GitHub 웹 인터페이스에서 업로드된 파일 구조를 브라우징하여 `RELEASE_MANIFEST.md`에 명시된 43종의 공식 자산 외에 불필요한 임시 파일이 없는지 확인합니다.
 - [ ] GitHub Actions 빌드 이력에서 `Release Hygiene Check` 단계가 통과(Green)하여 업로드 차단 폴더/파일이 유입되지 않았음을 교차 확인합니다.
 - [ ] GitHub Release에 `FinanceDataMart_Setup.exe`가 asset으로 첨부되어 있는지 확인합니다. 이 파일은 저장소 커밋 대상이 아니라 Release 첨부 대상입니다.
 - [ ] 특히 `.venv/` 파이썬 가상환경 폴더, `__pycache__/` 바이트코드 캐시, 로컬 개발 시 생성되었던 `column_inventory.xlsx`, `validation_log.csv` 등의 임시 산출물이 노출되지 않았는지 이중 스캔합니다.
