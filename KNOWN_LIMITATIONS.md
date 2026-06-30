@@ -9,7 +9,7 @@
 2. **DuckDB 및 Parquet 파일 포맷 미지원**: 현재 버전은 성능 지연을 보완하기 위해 대규모 데이터베이스 엔진(DuckDB)이나 고성능 압축 포맷(Parquet)을 사용하지 않습니다. 모든 입출력은 CSV 및 Excel로만 구동됩니다.
 3. **Power BI / ODBC / SharePoint 연동 미지원**: 외부 리포팅 플랫폼 연결이나 클라우드 데이터 공유(SharePoint)를 직접 제어하는 브릿지를 내장하고 있지 않습니다.
 4. **설정 편집 GUI 미지원**: 데스크톱 UI 홈에서 설정(`config.xlsx`)의 내용물 컬럼 매핑 규칙을 직접 수정하는 UI 화면을 지원하지 않습니다. 설정 수정은 엑셀 프로그램을 직접 사용하여 갱신해야 합니다.
-5. **GitHub Actions 및 CI/CD 워크플로우 미지원**: 깃허브 공개 리포지토리 상에서 코드가 변경될 때 자동으로 빌드하고 정합성을 체크하는 CI/CD 워크플로우 파이프라인은 설계되어 있지 않습니다. 무결성 검증은 로컬에서 `pre_release_check.py`를 수동 호출하여 확인해야 합니다.
+5. **GitHub Release asset 자동 배포 미지원**: GitHub Actions 기반 기본 검증 CI는 제공하지만, `FinanceDataMart_Setup.exe`를 자동 빌드하거나 Release asset으로 자동 업로드하는 CD 파이프라인은 제공하지 않습니다. 공식 배포 파일 첨부와 릴리즈 판단은 사용자가 수동으로 수행해야 합니다.
 
 ---
 

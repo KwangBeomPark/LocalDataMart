@@ -4,7 +4,7 @@
 
 ---
 
-## 📂 1. 배포 대상 파일 목록 (총 38종)
+## 📂 1. 배포 대상 파일 목록 (총 42종)
 
 ### 1) 프로젝트 핵심 설정 및 메인 가이드 (7개)
 - `README.md`: 프로젝트 개요, 퀵스타트 및 핵심 제약 조건 명세서
@@ -15,7 +15,7 @@
 - `AI_CODE_MAP.MD`: 프로젝트 소스코드 디렉토리 지도 및 컴포넌트 해설서
 - `PROJECT_ROADMAP.MD`: 데이터마트 기능 고도화 로드맵
 
-### 2) 배포 가이드 및 사용자 지침 문서 (12개)
+### 2) 배포 가이드 및 사용자 지침 문서 (13개)
 - `USER_GUIDE.md`: CLI/GUI 실행 순서 및 Config 시트 매핑 상세 기술문서
 - `KNOWN_LIMITATIONS.md`: 인메모리 OOM 한계 및 연동 플랫폼 미지원 고지서
 - `PUBLIC_RELEASE_CHECKLIST.md`: 보안 검열 및 수동 릴리즈 자가 체크리스트
@@ -28,6 +28,7 @@
 - `POST_RELEASE_CHECKLIST.md`: 공개 후 원격 저장소 파일 위생 및 가동성 확인 체크리스트
 - `LICENSE_DECISION_GUIDE.md`: 사용자의 오픈소스 라이선스 검토 및 결정용 안내서
 - `DISTRIBUTION_TEST_GUIDE.md`: 타 PC에서의 소스코드 다운로드 및 가동성 검증용 다른 PC 설치 테스트 가이드
+- `PHASE23_EXTERNAL_TEST_REPORT.md`: Python 미설치 외부 Windows PC 설치 테스트 결과 기록 양식
 
 ### 3) 정제 및 요약 엔진 모듈 (`app/` 폴더 - 11개)
 - `app/__init__.py`: 패키지 초기화 파일
@@ -42,12 +43,17 @@
 - `app/ui_app.py`: tkinter 기반 비동기 데스크톱 GUI 제어반 모듈
 - `app/column_inventory.py`: Raw 엑셀 컬럼 인벤토리 분석 집계 추출 모듈
 
-### 4) 운영 및 검증용 스크립트 (`scripts/` 폴더 - 8개)
+### 4) 운영 및 검증용 스크립트 (`scripts/` 폴더 - 10개)
 - `scripts/create_sample_data.py`: 가상 데이터 및 설정 템플릿 복구 유틸리티
 - `scripts/create_column_inventory.py`: 신규 파일의 스키마 분석용 인벤토리 추출기
+- `scripts/check_release_hygiene.py`: 원격 깃 유입 방지용 배포 위생 자동 검사 스크립트
+- `scripts/run_quality_gate.py`: 파이프라인 무결성을 원클릭으로 일괄 검증하는 로컬 품질 게이트 스크립트
 - `scripts/pre_release_check.py`: 배포 전 자가 무결성 7대 진단 검증기 (★ PASS 획득 필수)
 - `scripts/run_desktop_app.py`: 데스크톱 GUI 원클릭 가동용 래퍼 스크립트
 - `scripts/installer.py`: AppData 설치 및 가상환경, 바로가기를 자동 생성해주는 자가 설치 스크립트
 - `scripts/build_installer.py`: 자가 설치 스크립트를 PyInstaller로 단일 exe로 빌드해주는 배포 스크립트
 - `scripts/setup_installer.py`: Python 미설치 PC용 standalone 앱을 AppData에 배치하는 Setup 엔트리포인트
 - `scripts/build_standalone.py`: `FinanceDataMart.exe`와 `FinanceDataMart_Setup.exe`를 생성하는 standalone 빌드 스크립트
+
+### 5) CI/CD 설정 파일 (1개)
+- `.github/workflows/ci.yml`: GitHub Actions 자동 검증 파이프라인 구성 파일

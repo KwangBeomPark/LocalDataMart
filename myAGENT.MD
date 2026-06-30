@@ -535,7 +535,7 @@ Phase 22 완료:
 - Python 미설치 PC용 standalone exe(FinanceDataMart.exe) 및 Setup 파일(FinanceDataMart_Setup.exe) 컴파일 완결
 - GUI 앱 내 Subprocess 호출부를 백그라운드 스레드 직접 임포트 호출 구조로 완전 리팩토링 완료
 - 빌드 타임에 sample_workspace 엑셀 템플릿을 사전 생성해 Setup.exe 내부에 add-data 패킹하여, 오프라인 환경에서도 1초 만에 sample_workspace를 복원해 내도록 정밀 설계 완결
-- 38종 마스터 소스 자산 정합성 100% 동기화 완료
+- 42종 마스터 소스 자산 정합성 100% 동기화 완료
 ```
 
 현재 단계의 성공 기준:

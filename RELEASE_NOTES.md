@@ -55,3 +55,23 @@ python scripts/run_desktop_app.py
 
 ## 📝 5. 후속 변경 이력 (Changelog) 기록 방식
 - 향후 버그 수정 및 패치 버전(v1.0.1 등) 릴리즈 시, 본 파일 하단에 변경 내역 요약과 수정된 모듈 명세를 추가 기입하여 변경 이력(Changelog)을 유지 보존하십시오.
+
+---
+
+## 📝 v1.0.0-RC2 (2026-06-30) - Phase 23 완료 배포판
+- **PowerShell 바로가기 경로 안정성 개선**: 사용자 Windows 계정명에 공백이나 홑따옴표가 들어 있는 경우 바탕화면 바로가기 생성이 실패하던 버그를 홑따옴표 이스케이프 및 `-NoProfile -ExecutionPolicy Bypass` 추가로 완전 해결.
+- **AppData 설치 도중 리소스 잠금(PermissionError) 대응**: 설치 타겟 경로의 파일이나 엑셀 템플릿이 켜져 있을 때 발생하는 `PermissionError`를 명확한 안내 팝업과 함께 대기(`input()`)하도록 개선.
+- **GUI 기동 크래시 및 오류 팝업 정밀화**:
+  - `--noconsole`로 기동 실패 시 아무 팝업 없이 꺼지던 것을 native dialog fallback으로 래핑.
+  - GUI 내부 갱신 도중 `SystemExit` 에러 발생 시 단순 코드 반환 대신 `error_log.txt`를 역파싱하여 구체적인 에러 메시지를 다이얼로그로 출력.
+  - 다이얼로그 및 오류 화면 내에 로컬 개발 PC의 절대경로나 `traceback` 스택 트레이스 정보가 일체 유출되지 않도록 `sanitize_message()` 적용 강화.
+- **외부 PC 설치 검증 보고서 신설**: Python 미설치 환경의 오프라인 Windows 11 PC에서 3대 핵심 GUI 기능 및 pre-release 자가 진단 패스 결과를 수집한 [PHASE23_EXTERNAL_TEST_REPORT.md](PHASE23_EXTERNAL_TEST_REPORT.md) 추가.
+
+---
+
+## 📝 v1.0.0-RC3 (2026-06-30) - Phase 24 진행 중 배포판 (Actions 검증 대기)
+- **GitHub Actions CI 도입**: 원격 저장소 푸시 및 PR 시 코드 컴파일, 샘플 가상 데이터 생성, 메인 파이프라인 구동, 컬럼 인벤토리 분석, pre-release 무결성 진단을 자동으로 수행하는 `Finance DataMart CI` 연동 (.github/workflows/ci.yml 추가).
+- **배포 위생 자동 검사(Release Hygiene Check)**: Git tracked 목록을 역추적하여 `.gitignore` 대상(로컬 격리용 `tool/`, `sample_workspace/`, `build/`, `dist/`, 캐시/로그)이 실수로 업로드되는 것을 CI 상에서 원천 방어 (`scripts/check_release_hygiene.py` 연동).
+- **로컬 원클릭 품질 게이트(Local Quality Gate)**: CI와 동일한 7단계의 안전성 검증을 개발자 PC에서 단일 명령어로 원클릭 일괄 수행하는 로컬 전용 래퍼 통합 (`scripts/run_quality_gate.py` 추가).
+- **공식 배포 자산 42종 정합성 완성**: 신규 검증 스크립트 2종 및 CI 구성 파일을 추가 반영하여 배포 대상을 총 42종 사양으로 갱신 완료.
+- **로컬 전용 격리 유지**: `tool/` 폴더 내에 빌드 및 임시 산출물들을 보관하고 git 추적 대상에서 격리하는 배포 위생 원칙 고수.

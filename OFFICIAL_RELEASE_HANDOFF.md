@@ -15,7 +15,7 @@
 ## 📦 2. 배포 사양 최종 선언
 본 프로젝트는 소스코드 배포판을 기본으로 하며, GitHub Release asset으로 Python 미설치 PC용 AppData 설치 파일 `FinanceDataMart_Setup.exe`를 선택 제공할 수 있습니다. 아래 제약을 재확인하십시오.
 - **독립 실행 Setup 제공**: Setup 파일은 Python 런타임과 의존 라이브러리를 포함하며, 설치 후 `%LOCALAPPDATA%\FinanceDataMart\FinanceDataMart.exe`를 실행합니다. 단, 코드 서명은 적용되어 있지 않아 최초 실행 시 Windows SmartScreen 경고가 표시될 수 있습니다.
-- **CI/CD 자동화 배제**: GitHub Actions 워크플로우 또는 테스트 파이프라인 연동 기능은 포함되어 있지 않으며, 배포는 전적으로 사용자의 수동 명령어 기반으로 가동됩니다.
+- **CI 자동 검증 제공**: GitHub Actions 워크플로우(`.github/workflows/ci.yml`)가 포함되어 push 및 pull request 시 샘플 데이터 생성, 파이프라인 실행, 컬럼 인벤토리 생성, pre-release check를 자동 검증합니다. 단, GitHub Release asset 업로드와 공식 배포 판단은 사용자의 수동 확인을 필요로 합니다.
 - **플랫폼 제약성**: DuckDB, Parquet, Power BI, ODBC, SharePoint 연동은 포함되어 있지 않습니다.
 
 ---
@@ -44,7 +44,7 @@ git init -b main
 # 3단계: 원격 GitHub 저장소 매핑
 git remote add origin https://github.com/사용자계정/LocalDataMart.git
 
-# 4단계: RELEASE_MANIFEST.md의 38종 공식 파일 추가
+# 4단계: RELEASE_MANIFEST.md의 42종 공식 파일 추가
 git add .
 
 # 5단계: 첫 번째 공식 릴리즈 커밋 작성

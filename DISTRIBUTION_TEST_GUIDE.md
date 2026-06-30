@@ -85,11 +85,13 @@ python -c "from app.ui_app import DataMartUI; print('UI import ok')"
 
 수동으로 GitHub 리포지토리에 푸시할 때 업로드되는 대상과 로컬 전용 격리 대상은 다음과 같습니다. 사용자는 `.gitignore` 설정에 의해 격리 대상이 유출되지 않도록 유지해야 합니다.
 
-### A. GitHub 업로드 대상 (RELEASE_MANIFEST.md 기준 38종 자산)
+### A. GitHub 업로드 대상 (RELEASE_MANIFEST.md 기준 42종 자산)
 - 핵심 소스코드: `app/*.py` (11종), `scripts/*.py` (8종)
 - 마스터 문서: `README.md`, `LICENSE`, `requirements.txt`, `.gitignore`
 - 상세 안내서: `USER_GUIDE.md`, `KNOWN_LIMITATIONS.md`, `MAINTENANCE.md`, `RELEASE_NOTES.md`, `THIRD_PARTY_NOTICES.md`
 - 배포/검증 지침서: `GITHUB_RELEASE_GUIDE.md`, `PUBLIC_RELEASE_CHECKLIST.md`, `RELEASE_MANIFEST.md`, `OFFICIAL_RELEASE_HANDOFF.md`, `POST_RELEASE_CHECKLIST.md`, `LICENSE_DECISION_GUIDE.md`, `DISTRIBUTION_TEST_GUIDE.md` (본 문서)
+- 외부 PC 검증 기록지: `PHASE23_EXTERNAL_TEST_REPORT.md`
+- 자동 검증 워크플로우: `.github/workflows/ci.yml`
 - GitHub Release 첨부 파일: `dist/FinanceDataMart_Setup.exe`는 저장소 커밋 대상이 아니라 Release asset으로만 업로드합니다.
 
 ### B. 로컬 격리 및 제외 대상 (GitHub 업로드 절대 금지)

@@ -41,3 +41,63 @@
 - **마이너 버전 (v1.X.0)**: 기존 엔진 호환성을 유지하며 신규 data_group 추가 또는 Report View 집계 기능 고도화 시
 - **패치 버전 (v1.0.X)**: 기존 설정을 유지한 채 버그 핫픽스 및 예외 처리 구문 보완 시
 - **배포 방식 관리**: 핫픽스 및 기능 패치 버전은 소스코드 배포를 기본으로 하며, 독립 실행 Setup 관련 변경이 있을 때만 `scripts/build_standalone.py`로 `FinanceDataMart_Setup.exe`를 재빌드하고 GitHub Release asset을 갱신합니다.
+
+---
+
+## 🛠️ 4. GitHub Actions CI 실패 시 조치 가이드
+원격 저장소에 푸시(Push)하거나 PR을 전송한 뒤, GitHub Actions 자동 검증(`Finance DataMart CI`) 빌드가 실패(빨간 불)한 경우 아래 절차에 따라 진단 및 조치를 수행하십시오.
+
+1. **GitHub CI 로그 확인**:
+   - GitHub Actions 탭에서 실패한 워크플로우 단계를 확인하여 `Release Hygiene Check` 또는 `Run Local Quality Gate` 중 어느 구간에서 실패가 발생했는지 식별합니다.
+2. **로컬 품질 게이트를 통한 재현 및 확인 (권장)**:
+   - 원격 저장소에 수정 코드를 다시 푸시하기 전, 로컬 개발 환경에서 품질 검사 스크립트를 실행하여 모든 검증이 통과하는지 한 번에 점검하십시오:
+     ```bash
+     python scripts/run_quality_gate.py
+     ```
+   - 만약 특정 단계가 실패할 경우, 개별 스크립트들을 수동 기동하여 디버깅할 수 있습니다:
+     ```bash
+     # 1) 배포 위생 검사 단독 테스트
+     python scripts/check_release_hygiene.py
+
+     # 2) 전체 코드 컴파일 정상 여부 검사
+     python -m compileall app scripts
+
+     # 3) 무결성 자가 진단 가동 (7대 항목 PASS 확인)
+     python scripts/pre_release_check.py
+
+     # 3) GUI 모듈 임포트 가능 여부 검사
+     python -c "from app.ui_app import DataMartUI; print('UI import ok')"
+     ```
+3. **배포 위생 체크 (Release Hygiene Check 실패 시)**:
+   - 만약 GitHub Actions 빌드 중 `Release Hygiene Check` 단계에서 실패한 경우, 이는 `.gitignore` 대상 폴더(예: `sample_workspace/`, `tool/`, `build/`, `dist/` 등)나 캐시 파일이 실수로 Git에 의해 추적(tracked)되고 있는 상태입니다.
+   - **조치 요령**: 로컬 터미널에서 다음 명령어를 실행하여 문제를 해결하십시오:
+     ```bash
+     # 1) 로컬 위생 검사 스크립트 실행으로 위반 목록 확인
+     python scripts/check_release_hygiene.py
+
+     # 2) 실수로 추적된 대상을 Git 관리 대상에서만 수동 제거 (실제 파일은 삭제되지 않음)
+     git rm -r --cached sample_workspace/
+     git rm -r --cached tool/
+     # (기타 위반으로 나열된 파일들에 대해 동일하게 git rm --cached 실행)
+
+     # 3) 정리 후 커밋 작성 및 푸시
+     git commit -m "Fix release hygiene by untracking forbidden files"
+     git push
+     ```
+
+---
+
+## 🔍 5. GitHub Actions 원격 실행 결과 수동 확인 절차
+원격 GitHub Actions CI 결과를 최종 검인할 때는 다음 수동 검증 순서에 따라 처리하십시오.
+
+1. **원격 푸시(Push) 또는 PR 생성**:
+   - 로컬에서 `python scripts/run_quality_gate.py`로 사전 품질 게이트를 완료한 후, 코드를 GitHub 원격 저장소에 푸시하거나 Pull Request를 생성합니다.
+2. **GitHub Actions 탭 모니터링**:
+   - GitHub 리포지토리 웹 페이지 상단의 **Actions** 탭으로 이동합니다.
+   - 최근 푸시된 커밋 메시지 또는 PR 제목으로 진행 중인 `Finance DataMart CI` 워크플로우 실행을 확인합니다.
+3. **세부 단계 통과 여부 교차 검증**:
+   - 워크플로우 실행을 클릭하여 세부 단계를 진입합니다.
+   - **Release Hygiene Check** 단계가 성공(Green Check)했는지 확인하여 `.gitignore` 대상 파일들이 원격에 노출되지 않았는지 검증합니다.
+   - **Run Local Quality Gate** 단계가 성공했는지 확인하여 소스 컴파일, 샘플 데이터 정제 연산, 무결성 자가 진단(7대 항목 PASS)이 가상 Windows 환경에서도 완벽히 가동하는지 확인합니다.
+4. **최종 릴리즈 가용성 확정**:
+   - 원격 Actions 빌드가 모두 초록색(PASS)으로 완료되면, 비로소 Phase 24 완료를 선언하고 배포용 RC3 릴리즈를 공식 마감(Releases 탭에 standalone Setup 업로드)할 수 있습니다. 만약 원격 빌드가 통과하지 않았다면 Phase 24는 대기(In Progress) 상태로 계속 묶이게 됩니다.

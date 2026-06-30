@@ -24,17 +24,17 @@ class DataMartUI:
         self.root.title("Finance DataMart Tool - Desktop Home")
         self.root.geometry("520x390")
         self.root.resizable(False, False)
-        
+
         # 기본 경로 설정
         self.workspace_dir = PROJECT_ROOT / "sample_workspace"
         self.output_dir = self.workspace_dir / "04_Report_View"
         self.log_dir = self.workspace_dir / "99_Logs"
         self.config_file = self.workspace_dir / "90_Config" / "config.xlsx"
         self.validation_log = self.log_dir / "validation_log.csv"
-        
+
         # 처리 중인 상태 플래그
         self.is_processing = False
-        
+
         self._build_ui()
         self._update_log_status()
 
@@ -56,104 +56,104 @@ class DataMartUI:
         title_frame = tk.Frame(self.root, bg="#2c3e50", height=60)
         title_frame.pack(fill=tk.X)
         title_frame.pack_propagate(False)
-        
+
         title_label = tk.Label(
-            title_frame, 
-            text="Finance DataMart Control Panel", 
-            font=("Helvetica", 14, "bold"), 
-            fg="#ecf0f1", 
+            title_frame,
+            text="Finance DataMart Control Panel",
+            font=("Helvetica", 14, "bold"),
+            fg="#ecf0f1",
             bg="#2c3e50"
         )
         title_label.pack(pady=15)
-        
+
         # 메인 버튼 컨테이너 프레임
         button_frame = tk.Frame(self.root, padx=20, pady=20)
         button_frame.pack(fill=tk.BOTH, expand=True)
-        
+
         # 왼쪽: 데이터 정제 및 분석 처리 버튼들
         proc_lf = tk.LabelFrame(button_frame, text="Data Mart Processing", font=("Helvetica", 9, "bold"), padx=10, pady=10)
         proc_lf.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
-        
+
         self.btn_refresh = tk.Button(
-            proc_lf, 
-            text="Refresh DataMart", 
-            command=self.on_refresh, 
+            proc_lf,
+            text="Refresh DataMart",
+            command=self.on_refresh,
             font=("Helvetica", 10, "bold"),
             bg="#27ae60",
             fg="white",
             height=2
         )
         self.btn_refresh.pack(fill=tk.X, pady=8)
-        
+
         self.btn_inventory = tk.Button(
-            proc_lf, 
-            text="Generate Inventory", 
-            command=self.on_generate_inventory, 
+            proc_lf,
+            text="Generate Inventory",
+            command=self.on_generate_inventory,
             font=("Helvetica", 10, "bold"),
             bg="#2980b9",
             fg="white",
             height=2
         )
         self.btn_inventory.pack(fill=tk.X, pady=8)
-        
+
         self.btn_precheck = tk.Button(
-            proc_lf, 
-            text="Run Pre-release Check", 
-            command=self.on_pre_release_check, 
+            proc_lf,
+            text="Run Pre-release Check",
+            command=self.on_pre_release_check,
             font=("Helvetica", 10, "bold"),
             bg="#e67e22",
             fg="white",
             height=2
         )
         self.btn_precheck.pack(fill=tk.X, pady=8)
-        
+
         # 오른쪽: 탐색 및 파일 열기 버튼들
         open_lf = tk.LabelFrame(button_frame, text="Quick Shortcuts", font=("Helvetica", 9, "bold"), padx=10, pady=10)
         open_lf.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(10, 0))
-        
+
         self.btn_open_config = tk.Button(
-            open_lf, 
-            text="Open Config File", 
-            command=self.on_open_config, 
+            open_lf,
+            text="Open Config File",
+            command=self.on_open_config,
             font=("Helvetica", 10),
             height=1
         )
         self.btn_open_config.pack(fill=tk.X, pady=5)
-        
+
         self.btn_open_output = tk.Button(
-            open_lf, 
-            text="Open Output Folder", 
-            command=self.on_open_output, 
+            open_lf,
+            text="Open Output Folder",
+            command=self.on_open_output,
             font=("Helvetica", 10),
             height=1
         )
         self.btn_open_output.pack(fill=tk.X, pady=5)
-        
+
         self.btn_open_log = tk.Button(
-            open_lf, 
-            text="Open Log Folder", 
-            command=self.on_open_log, 
+            open_lf,
+            text="Open Log Folder",
+            command=self.on_open_log,
             font=("Helvetica", 10),
             height=1
         )
         self.btn_open_log.pack(fill=tk.X, pady=5)
-        
+
         # 하단 상태 바 (Status Bar)
         self.status_bar = tk.Frame(self.root, bd=1, relief=tk.SUNKEN, padx=5, pady=5)
         self.status_bar.pack(fill=tk.X, side=tk.BOTTOM)
-        
+
         self.status_label = tk.Label(
-            self.status_bar, 
-            text="Status: Ready", 
-            font=("Helvetica", 9, "bold"), 
+            self.status_bar,
+            text="Status: Ready",
+            font=("Helvetica", 9, "bold"),
             fg="#7f8c8d"
         )
         self.status_label.pack(anchor=tk.W)
-        
+
         self.log_info_label = tk.Label(
-            self.status_bar, 
-            text="Log: -", 
-            font=("Helvetica", 8), 
+            self.status_bar,
+            text="Log: -",
+            font=("Helvetica", 8),
             fg="#95a5a6"
         )
         self.log_info_label.pack(anchor=tk.W, pady=(2, 0))
@@ -190,7 +190,7 @@ class DataMartUI:
         self.is_processing = True
         self._set_buttons_state(tk.DISABLED)
         self.status_label.config(text=f"Status: Running {task_name}...", fg="#d35400")
-        
+
         def run():
             try:
                 target_func()
@@ -204,7 +204,7 @@ class DataMartUI:
             except Exception as e:
                 safe_err = self._sanitize_message(e)
                 self.root.after(0, lambda: self._on_task_error(task_name, safe_err))
-                
+
         threading.Thread(target=run, daemon=True).start()
 
     def run_refresh_logic(self):
@@ -238,7 +238,32 @@ class DataMartUI:
         self._set_buttons_state(tk.NORMAL)
         self.status_label.config(text=f"Status: {task_name} Failed", fg="#c0392b")
         self._update_log_status()
-        messagebox.showerror("Error", f"Failed to execute {task_name}.\n\nReason: {error_msg}")
+
+        detailed_reason = self._sanitize_message(error_msg)
+        # SystemExit 등의 간접 오류인 경우 error_log.txt에서 정밀 에러 내역 탐색
+        if "SystemExit" in error_msg:
+            error_log_path = self.log_dir / "error_log.txt"
+            if error_log_path.exists() and error_log_path.stat().st_size > 0:
+                try:
+                    with open(error_log_path, "r", encoding="utf-8") as f:
+                        lines = [line.strip() for line in f.readlines() if line.strip()]
+                    if lines:
+                        last_errs = []
+                        # 파일 뒤에서부터 역으로 스캔하여 에러/예외 키워드 라인 수집
+                        for line in reversed(lines):
+                            if any(k in line.lower() for k in ["error", "exception", "critical", "fail"]):
+                                last_errs.append(line)
+                            if len(last_errs) >= 2:
+                                break
+                        if not last_errs:
+                            last_errs = lines[-2:]
+                        # 획득한 에러 메시지 복원 및 absolute path 마스킹 적용
+                        raw_reason = "\n".join(reversed(last_errs))
+                        detailed_reason = self._sanitize_message(raw_reason)
+                except Exception:
+                    pass
+
+        messagebox.showerror("Error", f"Failed to execute {task_name}.\n\nReason:\n{detailed_reason}")
 
     # --- 버튼 핸들러 ---
     def on_refresh(self):
@@ -256,7 +281,7 @@ class DataMartUI:
         if not abs_path.exists():
             messagebox.showwarning("Warning", f"Path does not exist: {self._sanitize_message(abs_path)}")
             return
-            
+
         try:
             # 윈도우 표준 파일/폴더 셸 오프너 기동
             os.startfile(abs_path)

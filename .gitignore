@@ -23,6 +23,9 @@ Thumbs.db
 # Regenerated sample workspace, runtime outputs, and logs
 sample_workspace/
 
+# Local-only tool workspace and archived build artifacts
+tool/
+
 # PyInstaller build artifacts
 build/
 dist/

@@ -2,7 +2,7 @@
 
 이 도구는 여러 월별 Excel Raw Data 파일을 폴더 단위로 관리하고, 사용자가 정의한 Excel Config 기준에 따라 필요한 컬럼만 정제·통합한 뒤, Excel 등 리포트 도구에서 즉시 활용할 수 있는 Clean Table과 Report View(Summary)를 생성하는 로컬 데이터마트 빌더의 최소 기능 제품(MVP)입니다.
 
-현재 구현된 단계는 **Phase 0 ~ Phase 22 Python 미설치 PC용 독립 실행 배포판 및 설치파일 준비**로, `Sales_Closing` 및 `AR_Detail` 가상 데이터를 기반으로 전체적인 데이터 흐름(Raw Excel → Config → Clean CSV → Summary CSV)이 작동하며, Config 무결성 검증, Reconciliation(대조 정합성 검증), tkinter 기반 Desktop UI, pre-release 자가 무결성 진단 스크립트, MIT 라이선스 파일, 다른 PC 설치 테스트 가이드, 그리고 AppData 설치용 독립 실행 Setup 파일이 정립되어 있습니다. GitHub 저장소에는 소스코드와 문서를 올리고, GitHub Release에는 선택적으로 `FinanceDataMart_Setup.exe`를 첨부합니다.
+현재 개발 중인 단계는 **Phase 24 GitHub Actions 기반 자동 검증 및 배포 위생 자동화 (In Progress / 원격 실행 결과 확인 대기)**로, `Sales_Closing` 및 `AR_Detail` 가상 데이터를 기반으로 전체적인 데이터 흐름(Raw Excel → Config → Clean CSV → Summary CSV)이 작동하며, Config 무결성 검증, Reconciliation(대조 정합성 검증), tkinter 기반 Desktop UI, pre-release 자가 무결성 진단 스크립트, MIT 라이선스 파일, 다른 PC 설치 테스트 가이드, AppData 설치용 독립 실행 Setup 파일 검증이 완료되었고, 지속적인 코드 통합 및 배포 위생(Release Hygiene Check)의 안전성을 확인하기 위한 GitHub Actions 자동 검증 CI가 구축되어 진행 중이며 현재 Actions 원격 실행 결과 확인 대기를 하고 있습니다. GitHub 저장소에는 소스코드와 문서를 올리고, GitHub Release에는 선택적으로 `FinanceDataMart_Setup.exe`를 첨부합니다.
 
 ## 📖 배포 문서 가이드
 보다 상세한 동작 이해와 제한 사항 확인을 위해 아래 문서를 참고하십시오:
@@ -19,6 +19,7 @@
 - [라이선스 최종 결정 가이드 (LICENSE_DECISION_GUIDE.md)](LICENSE_DECISION_GUIDE.md): 사용자의 오픈소스 라이선스 검토 및 결정용 안내서
 - [MIT License (LICENSE)](LICENSE): 프로젝트 공식 오픈소스 라이선스 전문
 - [배포 버전 설치 테스트 가이드 (DISTRIBUTION_TEST_GUIDE.md)](DISTRIBUTION_TEST_GUIDE.md): 타 PC 환경에서 소스코드를 받아 설치 및 기동을 수동 검증하기 위한 PowerShell 가이드라인
+- [외부 PC 설치 테스트 결과 보고서 (PHASE23_EXTERNAL_TEST_REPORT.md)](PHASE23_EXTERNAL_TEST_REPORT.md): Python 미설치 Windows PC 환경의 독립 실행 Setup 파일 설치 테스트 결과 기록지
 
 ---
 
@@ -98,6 +99,13 @@ python scripts/run_desktop_app.py
 python scripts/pre_release_check.py
 ```
 데스크톱 GUI 앱 내의 `Run Pre-release Check` 버튼을 눌러서 실행할 수도 있으며, 검증 내역은 `sample_workspace/99_Logs/pre_release_check_log.txt`에 기록됩니다.
+
+### 6단계: 로컬 품질 게이트 일괄 검증 (로컬 CI)
+GitHub 원격 저장소에 푸시하기 전, 로컬에서 배포 위생(tracked 금지 파일 스캔), 컴파일, 데이터 정제 연산, 무결성 자가 진단까지 모든 검증 단계를 원클릭으로 일괄 수행하여 품질을 검증할 수 있습니다:
+```bash
+python scripts/run_quality_gate.py
+```
+모든 단계가 성공하면 `Quality gate PASS`가 출력되며 종료 코드 `0`을 반환합니다. 중간 단계 실패 시 즉시 중단되고 종료 코드 `1`을 냅니다.
 
 ---
 

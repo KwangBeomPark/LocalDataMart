@@ -30,7 +30,7 @@ def copy_standalone_files(src_dir: Path, dest_dir: Path):
     """임베딩된 standalone GUI 파일 및 문서 자산을 AppData 디렉토리로 안전 복사합니다."""
     print("Step 1: Copying standalone application files to AppData...")
     dest_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # 복사 대상 목록 정의
     copy_targets = [
         ("FinanceDataMart.exe", False),  # 독립 실행 GUI 바이너리
@@ -81,7 +81,7 @@ def initialize_sample_data(src_dir: Path, dest_dir: Path):
     print("Step 2: Restoring virtual sample workspace and configurations...")
     src_workspace = src_dir / "sample_workspace"
     dest_workspace = dest_dir / "sample_workspace"
-    
+
     if src_workspace.exists():
         if dest_workspace.exists():
             shutil.rmtree(dest_workspace)
@@ -100,55 +100,77 @@ def initialize_sample_data(src_dir: Path, dest_dir: Path):
 def create_desktop_shortcut(dest_dir: Path):
     """사용자 바탕화면(Desktop)에 GUI 앱 바로가기 아이콘을 생성합니다."""
     print("Step 3: Creating desktop shortcut pointing to Standalone EXE...")
-    
+
     app_exe = dest_dir / "FinanceDataMart.exe"
-    
+
+    # PowerShell 문자열에서 홑따옴표가 오동작하지 않도록 이스케이프 처리
+    app_exe_str = str(app_exe).replace("'", "''")
+    dest_dir_str = str(dest_dir).replace("'", "''")
+
     # PowerShell 스크립트를 사용하여 OneDrive 바탕화면 및 다국어 지원 대응 바로가기 생성
     # TargetPath는 독립 실행 파일인 FinanceDataMart.exe를 직접 지목합니다.
     ps_cmd = (
         f"$DesktopPath = [Environment]::GetFolderPath('Desktop'); "
+        f"if (-not $DesktopPath) {{ $DesktopPath = [System.IO.Path]::Combine($env:USERPROFILE, 'Desktop') }}; "
         f"$WshShell = New-Object -ComObject WScript.Shell; "
         f"$Shortcut = $WshShell.CreateShortcut(\"$DesktopPath\\FinanceDataMart.lnk\"); "
-        f"$Shortcut.TargetPath = '{str(app_exe)}'; "
-        f"$Shortcut.WorkingDirectory = '{str(dest_dir)}'; "
+        f"$Shortcut.TargetPath = '{app_exe_str}'; "
+        f"$Shortcut.WorkingDirectory = '{dest_dir_str}'; "
         f"$Shortcut.Description = 'Finance DataMart Tool (Standalone)'; "
         f"$Shortcut.Save()"
     )
-    
-    subprocess.run(["powershell", "-Command", ps_cmd], check=True)
+
+    subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps_cmd], check=True)
     print(" - Desktop shortcut successfully created.")
 
 def main():
     print("=========================================================")
     print("   Finance DataMart - Standalone AppData Setup           ")
     print("=========================================================")
-    
+    print("[Notice] This installer does not require Administrator privileges.")
+    print("         If Windows SmartScreen warns you, click 'More info' ")
+    print("         and then 'Run anyway' to proceed.")
+    print("=========================================================")
+
     appdata_local = Path(os.environ["LOCALAPPDATA"])
     dest_dir = appdata_local / "FinanceDataMart"
     src_dir = get_bundle_dir()
-    
+
     print("Target Installation Directory: %LOCALAPPDATA%\\FinanceDataMart")
     print("---------------------------------------------------------")
-    
+
     try:
         # 1. 파일 복사
         copy_standalone_files(src_dir, dest_dir)
-        
+
         # 2. 샘플 템플릿 복구 (natively 구동)
         initialize_sample_data(src_dir, dest_dir)
-        
+
         # 3. 바로가기 연결
         create_desktop_shortcut(dest_dir)
-        
+
         print("---------------------------------------------------------")
         print("SUCCESS: Standalone installation completed successfully!")
         print("   You can now run the app via the desktop shortcut: 'FinanceDataMart'")
         print("=========================================================")
-        
+        input("\nPress Enter to exit...")
+
+    except PermissionError as pe:
+        print("\nERROR: Access Denied (PermissionError).")
+        print("The application files or configurations might be locked by another process.")
+        print("Please ensure that:")
+        print(" 1. The application (FinanceDataMart) is NOT currently running.")
+        print(" 2. None of the files in the target directory (especially config.xlsx or result CSV files) are open in Excel.")
+        print("Please close any running instances or open files and try again.")
+        print("=========================================================")
+        input("\nPress Enter to exit...")
+        sys.exit(1)
+
     except Exception as e:
         print("\nERROR: Setup failed due to the following error:")
         print(f"Error details: {sanitize_message(e)}")
         print("=========================================================")
+        input("\nPress Enter to exit...")
         sys.exit(1)
 
 if __name__ == "__main__":

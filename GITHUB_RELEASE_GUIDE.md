@@ -6,7 +6,7 @@
 
 ## 🚫 1. 배포 사양 및 제약 사항
 1. **독립 실행형 Setup 배포**: 본 릴리즈는 소스코드 공개를 기본으로 하며, 파이썬이 설치되지 않은 PC 대응을 위해 바이너리가 포함된 `FinanceDataMart_Setup.exe`를 GitHub Release asset으로 첨부하여 제공할 수 있습니다.
-2. **CI/CD 및 Actions 배포 배제**: 원격 빌드나 자동 테스트 통합(GitHub Actions)은 내장되어 있지 않으며, 모든 검증은 로컬 터미널에서 수동으로 이행됩니다.
+2. **GitHub Actions 자동 검증 포함**: `.github/workflows/ci.yml`을 통해 push 및 pull request 시 코드 컴파일, 샘플 데이터 생성, 데이터마트 실행, 컬럼 인벤토리 생성, pre-release check가 자동 실행됩니다. 단, GitHub Release asset 업로드와 공식 배포 판단은 사용자가 수동으로 확인합니다.
 3. **다른 PC 설치 테스트 목적**: 본 배포본은 다양한 환경의 다른 PC에서 소스코드 및 독립 실행형 인스톨러를 다운로드하여 데이터마트 가동 및 무결성 진단까지 전 과정을 검증하는 것을 목표로 합니다.
 
 ---

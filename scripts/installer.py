@@ -39,7 +39,7 @@ def copy_distribution_files(src_dir: Path, dest_dir: Path):
     """지정된 소스 디렉토리에서 목적지 AppData 디렉토리로 배포 자산을 복사합니다."""
     print("Step 1: Copying distribution files to AppData...")
     dest_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # 복사할 핵심 대상 정의
     copy_targets = [
         ("app", True),
@@ -86,7 +86,7 @@ def setup_virtual_environment(dest_dir: Path):
     print("Step 2: Configuring Python virtual environment (.venv)...")
     venv_dir = dest_dir / ".venv"
     python_cmd = find_system_python()
-    
+
     if not venv_dir.exists():
         subprocess.run(python_cmd + ["-m", "venv", str(venv_dir)], check=True, cwd=dest_dir)
         print(" - Virtual environment (.venv) created successfully.")
@@ -98,7 +98,7 @@ def setup_virtual_environment(dest_dir: Path):
     pip_exe = venv_dir / "Scripts" / "pip.exe"
     if not pip_exe.exists():
         pip_exe = venv_dir / "Scripts" / "pip"
-        
+
     subprocess.run([str(pip_exe), "install", "-r", "requirements.txt"], check=True, cwd=dest_dir)
     print(" - External packages (pandas, openpyxl) installed successfully.")
 
@@ -108,68 +108,91 @@ def initialize_sample_data(dest_dir: Path):
     venv_python = dest_dir / ".venv" / "Scripts" / "python.exe"
     if not venv_python.exists():
         venv_python = dest_dir / ".venv" / "Scripts" / "python"
-        
+
     subprocess.run([str(venv_python), "scripts/create_sample_data.py"], check=True, cwd=dest_dir)
     print(" - Virtual sample workspace and config.xlsx created successfully.")
 
 def create_desktop_shortcut(dest_dir: Path):
     """사용자 바탕화면(Desktop)에 GUI 앱 바로가기 아이콘을 생성합니다."""
     print("Step 5: Creating desktop shortcut for GUI application...")
-    
+
     venv_pythonw = dest_dir / ".venv" / "Scripts" / "pythonw.exe"
     app_script = dest_dir / "scripts" / "run_desktop_app.py"
-    
+
+    # PowerShell 문자열에서 홑따옴표가 오동작하지 않도록 이스케이프 처리
+    venv_pythonw_str = str(venv_pythonw).replace("'", "''")
+    app_script_str = str(app_script).replace("'", "''")
+    dest_dir_str = str(dest_dir).replace("'", "''")
+
     # PowerShell 스크립트를 사용하여 OneDrive 바탕화면 및 다국어 지원 대응 바로가기 생성
     ps_cmd = (
         f"$DesktopPath = [Environment]::GetFolderPath('Desktop'); "
+        f"if (-not $DesktopPath) {{ $DesktopPath = [System.IO.Path]::Combine($env:USERPROFILE, 'Desktop') }}; "
         f"$WshShell = New-Object -ComObject WScript.Shell; "
         f"$Shortcut = $WshShell.CreateShortcut(\"$DesktopPath\\FinanceDataMart.lnk\"); "
-        f"$Shortcut.TargetPath = '{str(venv_pythonw)}'; "
-        f"$Shortcut.Arguments = '\"{str(app_script)}\"'; "
-        f"$Shortcut.WorkingDirectory = '{str(dest_dir)}'; "
+        f"$Shortcut.TargetPath = '{venv_pythonw_str}'; "
+        f"$Shortcut.Arguments = '\"{app_script_str}\"'; "
+        f"$Shortcut.WorkingDirectory = '{dest_dir_str}'; "
         f"$Shortcut.Description = 'Finance DataMart Tool GUI App'; "
         f"$Shortcut.Save()"
     )
-    
-    subprocess.run(["powershell", "-Command", ps_cmd], check=True)
+
+    subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps_cmd], check=True)
     print(" - Desktop shortcut successfully created.")
 
 def main():
     print("=========================================================")
     print("   Finance DataMart Tool - AppData Local Installer       ")
     print("=========================================================")
-    
+    print("[Notice] This installer does not require Administrator privileges.")
+    print("         If Windows SmartScreen warns you, click 'More info' ")
+    print("         and then 'Run anyway' to proceed.")
+    print("=========================================================")
+
     # AppData 설치 경로 설정
     appdata_local = Path(os.environ["LOCALAPPDATA"])
     dest_dir = appdata_local / "FinanceDataMart"
     src_dir = get_bundle_dir()
-    
+
     print(f"Target Installation Directory: {dest_dir}")
     print(f"Source Resource Directory    : {src_dir}")
     print("---------------------------------------------------------")
-    
+
     try:
         # 1. 파일 복사
         copy_distribution_files(src_dir, dest_dir)
-        
+
         # 2. 가상환경 생성
         setup_virtual_environment(dest_dir)
-        
+
         # 3. 샘플 생성 스크립트 가동
         initialize_sample_data(dest_dir)
-        
+
         # 4. 바로가기 생성
         create_desktop_shortcut(dest_dir)
-        
+
         print("---------------------------------------------------------")
         print("SUCCESS: Installation completed successfully!")
         print("   You can now launch the application via the desktop shortcut: 'FinanceDataMart'")
         print("=========================================================")
-        
+        input("\nPress Enter to exit...")
+
+    except PermissionError as pe:
+        print("\nERROR: Access Denied (PermissionError).")
+        print("The application files or configurations might be locked by another process.")
+        print("Please ensure that:")
+        print(" 1. The application (FinanceDataMart) or command processes are NOT currently running.")
+        print(" 2. None of the files in the target directory (especially config.xlsx or result CSV files) are open in Excel.")
+        print("Please close any running instances or open files and try again.")
+        print("=========================================================")
+        input("\nPress Enter to exit...")
+        sys.exit(1)
+
     except Exception as e:
         print("\nERROR: Installation failed due to the following error:")
         print(f"Error details: {e}")
         print("=========================================================")
+        input("\nPress Enter to exit...")
         sys.exit(1)
 
 if __name__ == "__main__":

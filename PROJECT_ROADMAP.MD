@@ -123,17 +123,22 @@ Quantity
 현재 상태:
 
 ```text
-Status: Phase 22 Completed / Phase 23 Setup
-Current Focus: Standalone Setup.exe testing and feedback collection
+Status: Phase 24 In Progress (GitHub Actions 원격 실행 결과 확인 대기)
+Current Focus: GitHub Actions Automated Validation workflow integration & release manifest expansion (Actions 원격 실행 결과 확인 대기)
 
 현재 집중할 일:
 
-1. Phase 22 (Python 미설치 PC용 독립 실행 배포판 및 설치파일 구현) 완료
-   - GUI의 Subprocess 기동 방식을 로컬 스레드 및 직접 모듈 로딩 방식으로 전면 리팩토링 완료
-   - 엑셀 템플릿(Config, raw 데이터)을 바이너리에 내장(add-data)하는 standalone Setup 파일(FinanceDataMart_Setup.exe) 컴파일 완결
-   - 38종 배포 자산 정합성 최신화 및 pre_release_check.py 100% PASS 획득 완료
-2. Phase 23 (독립 실행 설치파일 테스트 피드백 반영 및 다음 개발 범위 논의) 준비
-   - 타 PC 오프라인 설치 테스트 결과 접수 및 사후 개선 분야 정리
+1. Phase 23 (독립 실행 설치파일 테스트 피드백 반영 및 안내 개선) 완료
+   - 바로가기 생성 시 홑따옴표가 포함된 경로 이스케이프 및 PowerShell -NoProfile -ExecutionPolicy Bypass 적용
+   - 설치 도중 PermissionError에 대한 상세 안내 메시지 및 강제 종료 지연 대기(input) 추가
+   - GUI 무응답 꺼짐 방지용 Native Alert fallbacks 래핑 (안전하게 노출 메시지 정제)
+   - Pipeline 실패 시 error_log.txt 세부 예외를 역파싱하여 GUI 팝업에 연계하는 고도화
+   - 외부 PC 설치 테스트 결과 수집용 보고서 템플릿(PHASE23_EXTERNAL_TEST_REPORT.md) 추가 및 최종 PASS 확정 완료
+2. Phase 24 (GitHub Actions 기반 자동 검증 및 배포 위생 자동화) 진행 중 (GitHub Actions 원격 실행 결과 확인 대기)
+   - GitHub 원격 저장소 푸시 및 PR 생성 시 자동으로 코드 컴파일, 샘플 데이터 생성, 데이터마트 실행, 컬럼 인벤토리 분석, pre-release 자가 무결성 진단을 수행할 CI 워크플로우(.github/workflows/ci.yml) 신규 연동 완료 (현재 GitHub Actions 원격 실행 결과 확인 대기 상태)
+   - 배포 위생 자동화: gitignore 대상 임시/캐시/로컬 산출물의 깃 유입 방지 자동 차단 린팅 가이드(scripts/check_release_hygiene.py) 및 예외 통제 절차 구축 완료
+   - 로컬 원클릭 품질 게이트: CI와 동일한 모든 검증 단계를 로컬에서 일괄 수행하는 단일 래퍼 스크립트(scripts/run_quality_gate.py) 추가 및 로컬 원클릭 품질 게이트 구동 성공
+   - 중량 기술(DuckDB, Parquet, Power BI 등)의 불포함 규칙 유지 관리 및 검증 파이프라인 무결성 확보 완료
 ```
 
 현재 성공 기준:
@@ -543,7 +548,7 @@ GUI는 내부 엔진이 안정된 후 추가한다.
 
 ```text
 python scripts/pre_release_check.py 실행 시 현재 Phase 0~8 산출물과 로그 상태를 PASS/FAIL로 확인할 수 있다.
-exe 패키징, 설치 프로그램, GitHub Actions 구성은 포함하지 않는다.
+당시 Phase 9 범위에는 exe 패키징, 설치 프로그램, GitHub Actions 구성이 포함되지 않았다.
 ```
 
 ---
